@@ -1,4 +1,4 @@
-## ✨ Fitur
+## Fitur
 
 - **Boot Sequence** — Animasi loading awal dengan progress bar (bisa di-skip)
 - **Typing Animation** — Efek teks mengetik pada role (GAME DEVELOPER / DATA SCIENCE STUDENT / CREATIVE DEVELOPER)
@@ -16,7 +16,7 @@
 - **Accessibility** — Semantic HTML, ARIA labels, keyboard navigation, focus states
 - **Reduced Motion** — Menghormati pengaturan `prefers-reduced-motion`
 
-## 🎨 Konsep Visual
+## Konsep Visual
 
 - Background hitam kebiruan dengan grid digital transparan
 - Warna utama cyan / electric blue
@@ -25,7 +25,7 @@
 - Dekorasi sirkuit minimal
 - Bukan cyberpunk — lebih ke sci-fi game interface yang bersih
 
-## 📝 Edit Konten
+## Edit Konten
 
 Semua data portfolio disimpan di `js/data.js` dalam bentuk array object:
 
@@ -38,13 +38,13 @@ Semua data portfolio disimpan di `js/data.js` dalam bentuk array object:
 
 Edit file tersebut untuk mengubah konten tanpa menyentuh HTML.
 
-## 🌐 Browser Support
+## Browser Support
 
 - Chrome 90+
 - Firefox 90+
 - Edge 90+
 - Safari 15+
 
-## 📄 Lisensi
+## Lisensi
 
 Hak cipta © 2026 Reyhan Aditya. Seluruh hak cipta dilindungi.
