@@ -171,36 +171,114 @@
 
     function renderProjects() {
         const grid = document.getElementById('projectsGrid');
+
         if (!grid) return;
 
         grid.innerHTML = projects
             .map(
                 (proj) => `
-            <article class="project-card">
-              <div class="project-thumb">
-                <span class="project-number">PROJECT ${proj.id}</span>
-                <img src="${proj.image}" alt="${proj.name}"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
-                     onload="this.nextElementSibling.style.display='none';">
-                <div class="project-thumb-placeholder" style="display:none;">
-                  [ PROJECT ${proj.id} PREVIEW ]
-                </div>
-              </div>
-              <div class="project-info">
-                <h3 class="project-name">${proj.name}</h3>
-                <p class="project-category">${proj.category}</p>
-                <p class="project-desc">${proj.description}</p>
-                <div class="project-tech">
-                  ${proj.technology.map((t) => `<span class="tech-tag">${t}</span>`).join('')}
-                </div>
-                <span class="project-status ${proj.statusClass}">${proj.status}</span>
-                <a href="#contact" class="btn btn-secondary" aria-label="View project ${proj.name}">
-                  <span class="btn-text">VIEW PROJECT</span>
-                  <span class="btn-arrow">&#9654;</span>
-                </a>
-              </div>
-            </article>
-          `
+                    <article class="project-card">
+
+                        <div class="project-thumb">
+
+                            <span class="project-number">
+                                PROJECT ${proj.id}
+                            </span>
+
+                            <img
+                                src="${proj.image}"
+                                alt="${proj.name}"
+                                onerror="
+                                    this.style.display='none';
+                                    this.nextElementSibling.style.display='flex';
+                                "
+                                onload="
+                                    this.nextElementSibling.style.display='none';
+                                "
+                            >
+
+                            <div
+                                class="project-thumb-placeholder"
+                                style="display: none;"
+                            >
+                                [ PROJECT ${proj.id} PREVIEW ]
+                            </div>
+
+                        </div>
+
+                        <div class="project-info">
+
+                            <h3 class="project-name">
+                                ${proj.name}
+                            </h3>
+
+                            <p class="project-category">
+                                ${proj.category}
+                            </p>
+
+                            <p class="project-desc">
+                                ${proj.description}
+                            </p>
+
+                            <div class="project-tech">
+
+                                ${proj.technology
+                                    .map(
+                                        (technology) => `
+                                            <span class="tech-tag">
+                                                ${technology}
+                                            </span>
+                                        `
+                                    )
+                                    .join('')}
+
+                            </div>
+
+                            <span class="project-status ${proj.statusClass}">
+                                ${proj.status}
+                            </span>
+
+                            ${
+                                proj.url
+                                    ? `
+                                        <a
+                                            href="${proj.url}"
+                                            class="btn btn-secondary"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label="Open ${proj.name} website"
+                                        >
+                                            <span class="btn-text">
+                                                VIEW PROJECT
+                                            </span>
+
+                                            <span class="btn-arrow">
+                                                &#9654;
+                                            </span>
+                                        </a>
+                                    `
+                                    : `
+                                        <button
+                                            type="button"
+                                            class="btn btn-secondary project-coming-soon"
+                                            data-project-name="${proj.name}"
+                                            aria-label="${proj.name} akan segera hadir"
+                                        >
+                                            <span class="btn-text">
+                                                VIEW PROJECT
+                                            </span>
+
+                                            <span class="btn-arrow">
+                                                &#9654;
+                                            </span>
+                                        </button>
+                                    `
+                            }
+
+                        </div>
+
+                    </article>
+                `
             )
             .join('');
     }
@@ -402,51 +480,187 @@
     });
 
     // ============================================================
-    // Contact Form with Simulated Transmission
+    // Contact Form - Real Email Sending (Web3Forms) + Fallback Simulasi
     // ============================================================
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Validate
+        // --- Validasi input ---
         let isValid = true;
         const name = document.getElementById('name');
         const email = document.getElementById('email');
         const subject = document.getElementById('subject');
         const message = document.getElementById('message');
+        const honeypot = document.getElementById('botcheck');
 
-        // Reset errors
-        document.querySelectorAll('.form-group').forEach((group) => group.classList.remove('error'));
+        // Reset error
+        document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
+        transmissionStatus.classList.remove('visible');
 
-        // Validate name
-        if (!name.value.trim()) {
+        // Validasi nama
+        if (!name.value.trim() || name.value.trim().length < 2) {
             showFieldError('name');
             isValid = false;
         }
 
-        // Validate email
+        // Validasi email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!email.value.trim() || !emailRegex.test(email.value.trim())) {
             showFieldError('email');
             isValid = false;
         }
 
-        // Validate subject
-        if (!subject.value.trim()) {
+        // Validasi subjek
+        if (!subject.value.trim() || subject.value.trim().length < 3) {
             showFieldError('subject');
             isValid = false;
         }
 
-        // Validate message
-        if (!message.value.trim()) {
+        // Validasi pesan
+        if (!message.value.trim() || message.value.trim().length < 10) {
             showFieldError('message');
             isValid = false;
         }
 
+        // Honeypot check (jika terisi, anggap bot)
+        if (honeypot && honeypot.value.trim() !== '') {
+            // Diam-diam tolak, tapi tampilkan seolah sukses
+            console.warn('Honeypot triggered – possible spam bot');
+            showSimulatedSuccess();
+            return;
+        }
+
         if (!isValid) return;
 
-        // Simulate transmission
-        simulateTransmission();
+        // --- Kirim data ---
+        const submitBtn = document.getElementById('submitBtn');
+        disableSubmitButton(submitBtn);
+
+        // Cek apakah access key Web3Forms sudah diisi
+        const accessKey = (typeof contactConfig !== 'undefined' && contactConfig.web3formsAccessKey)
+            ? contactConfig.web3formsAccessKey.trim()
+            : '';
+
+        if (accessKey && accessKey !== 'YOUR_ACCESS_KEY_HERE') {
+            // Kirim nyata ke Web3Forms
+            await sendToWeb3Forms(accessKey, {
+                name: name.value.trim(),
+                email: email.value.trim(),
+                subject: subject.value.trim(),
+                message: message.value.trim()
+            }, submitBtn);
+        } else {
+            // Fallback simulasi (seperti sebelumnya)
+            simulateTransmission(submitBtn);
+        }
     });
+
+    function showFieldError(fieldId) {
+        const group = document.getElementById(fieldId).closest('.form-group');
+        if (group) group.classList.add('error');
+    }
+
+    function disableSubmitButton(btn) {
+        if (!btn) return;
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        btn.style.pointerEvents = 'none';
+    }
+
+    function enableSubmitButton(btn) {
+        if (!btn) return;
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.style.pointerEvents = 'auto';
+    }
+
+    async function sendToWeb3Forms(accessKey, data, submitBtn) {
+        transmissionStatus.classList.add('visible');
+        statusContent.className = 'status-content';
+        statusContent.textContent = 'ENCRYPTING MESSAGE...';
+
+        const formData = new FormData();
+        formData.append('access_key', accessKey);
+        formData.append('name', data.name);
+        formData.append('email', data.email);
+        formData.append('subject', data.subject);
+        formData.append('message', data.message);
+        // Tambahkan info tambahan agar Anda tahu ini dari portfolio
+        formData.append('portfolio_version', '2.0.26');
+
+        try {
+            // Update status
+            setTimeout(() => {
+                statusContent.textContent = 'ESTABLISHING SECURE CHANNEL...';
+            }, 500);
+
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Sukses
+                statusContent.textContent = '✓ TRANSMISSION SENT SUCCESSFULLY';
+                statusContent.className = 'status-content success';
+                contactForm.reset();
+            } else {
+                // Gagal dari server
+                throw new Error(result.message || 'Unknown error from server');
+            }
+        } catch (error) {
+            console.error('Contact form error:', error);
+            statusContent.textContent = '⚠ TRANSMISSION FAILED – Please try again later.';
+            statusContent.className = 'status-content error';
+        } finally {
+            enableSubmitButton(submitBtn);
+            // Sembunyikan status setelah beberapa detik (kecuali error tetap tampil)
+            if (statusContent.classList.contains('success')) {
+                setTimeout(() => {
+                    transmissionStatus.classList.remove('visible');
+                }, 3500);
+            }
+        }
+    }
+
+    function simulateTransmission(submitBtn) {
+        transmissionStatus.classList.add('visible');
+        statusContent.className = 'status-content';
+        statusContent.textContent = 'ENCRYPTING MESSAGE...';
+
+        setTimeout(() => {
+            statusContent.textContent = 'ESTABLISHING SECURE CHANNEL...';
+        }, 500);
+
+        setTimeout(() => {
+            statusContent.textContent = 'TRANSMISSION IN PROGRESS...';
+        }, 1000);
+
+        setTimeout(() => {
+            statusContent.textContent = '✓ TRANSMISSION SENT SUCCESSFULLY (SIMULATION)';
+            statusContent.className = 'status-content success';
+            contactForm.reset();
+            enableSubmitButton(submitBtn);
+
+            setTimeout(() => {
+                transmissionStatus.classList.remove('visible');
+            }, 3500);
+        }, 1500);
+    }
+
+    // Fungsi showSimulatedSuccess() untuk menangani honeypot trigger
+    function showSimulatedSuccess() {
+        // Berpura-pura sukses agar bot tidak tahu
+        transmissionStatus.classList.add('visible');
+        statusContent.className = 'status-content success';
+        statusContent.textContent = '✓ TRANSMISSION SENT SUCCESSFULLY';
+        contactForm.reset();
+        setTimeout(() => {
+            transmissionStatus.classList.remove('visible');
+        }, 3500);
+    }
 
     function showFieldError(fieldId) {
         const group = document.getElementById(fieldId).closest('.form-group');
@@ -722,6 +936,134 @@
             }
         });
     }
+    /* ============================================================
+    Project Coming Soon Modal
+    ============================================================ */
+
+    const projectModal =
+        document.getElementById("projectModal");
+
+    const projectModalName =
+        document.getElementById("projectModalName");
+
+    const projectModalClose =
+        document.getElementById("projectModalClose");
+
+    const projectModalConfirm =
+        document.getElementById("projectModalConfirm");
+
+
+    /* Membuka modal */
+    function openProjectModal(projectName) {
+
+        if (!projectModal) return;
+
+        /* Menampilkan nama project */
+        if (projectModalName) {
+
+            projectModalName.textContent =
+                projectName;
+        }
+
+        projectModal.classList.add("active");
+
+        projectModal.setAttribute(
+            "aria-hidden",
+            "false"
+        );
+
+        /* Mencegah halaman di-scroll */
+        document.body.style.overflow =
+            "hidden";
+
+        /* Fokus ke tombol */
+        projectModalConfirm?.focus();
+    }
+
+
+    /* Menutup modal */
+    function closeProjectModal() {
+
+        if (!projectModal) return;
+
+        projectModal.classList.remove(
+            "active"
+        );
+
+        projectModal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        /* Mengaktifkan scroll kembali */
+        document.body.style.overflow =
+            "";
+    }
+
+
+    /* Mendeteksi tombol project */
+    document.addEventListener(
+        "click",
+        (event) => {
+
+            const button =
+                event.target.closest(
+                    ".project-coming-soon"
+                );
+
+            if (!button) return;
+
+            const projectName =
+                button.dataset.projectName;
+
+            openProjectModal(
+                projectName
+            );
+        }
+    );
+
+
+    /* Tombol X */
+    projectModalClose?.addEventListener(
+        "click",
+        closeProjectModal
+    );
+
+
+    /* Tombol UNDERSTOOD */
+    projectModalConfirm?.addEventListener(
+        "click",
+        closeProjectModal
+    );
+
+
+    /* Klik background */
+    document
+        .querySelector(
+            "[data-close-modal]"
+        )
+        ?.addEventListener(
+            "click",
+            closeProjectModal
+        );
+
+
+    /* Menutup menggunakan Escape */
+    document.addEventListener(
+        "keydown",
+        (event) => {
+
+            if (
+                event.key === "Escape" &&
+                projectModal?.classList.contains(
+                    "active"
+                )
+            ) {
+
+                closeProjectModal();
+            }
+        }
+    );
 
     // Start the application
     init();

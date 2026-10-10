@@ -138,7 +138,7 @@
                     <div class="hero-stats">
                         <div class="stat-item">
                             <span class="stat-label">PLAYER ID</span>
-                            <span class="stat-value">RAK-2026</span>
+                            <span class="stat-value">REYHAN_AK77</span>
                         </div>
                         <div class="stat-item">
                             <span class="stat-label">LOCATION</span>
@@ -158,7 +158,6 @@
                     <div class="avatar-hologram">
                         <div class="avatar-scan-line"></div>
                         <div class="avatar-placeholder" id="avatarContainer">
-                            <!-- Try to load image, fallback to placeholder -->
                             <img src="assets/images/profile.png"
                             alt="Reyhan Aditya Profile"
                             class="avatar-img"
@@ -271,6 +270,7 @@
         </section>
 
         <!-- Section 7: Contact Terminal -->
+        <!-- Section 7: Contact Terminal -->
         <section class="section contact-section" id="contact" data-section-name="contact">
             <div class="section-header">
                 <h2 class="section-title"><span class="title-accent">[</span> ESTABLISH CONNECTION <span class="title-accent">]</span></h2>
@@ -285,10 +285,16 @@
                         <span class="terminal-title">COMMUNICATION TERMINAL v2.0</span>
                     </div>
                     <form class="contact-form" id="contactForm" novalidate>
+                        <!-- Honeypot anti-spam (tersembunyi dari user) -->
+                        <div class="form-group honeypot" aria-hidden="true">
+                            <label for="botcheck" class="form-label">Leave empty</label>
+                            <input type="text" id="botcheck" name="botcheck" class="form-input" tabindex="-1" autocomplete="off">
+                        </div>
+
                         <div class="form-group">
                             <label for="name" class="form-label">IDENTIFICATION</label>
-                            <input type="text" id="name" name="name" class="form-input" placeholder="Enter your name..." required autocomplete="name">
-                            <span class="form-error" id="nameError">Identification required</span>
+                            <input type="text" id="name" name="name" class="form-input" placeholder="Enter your name..." required autocomplete="name" minlength="2" maxlength="100">
+                            <span class="form-error" id="nameError">Identification required (min. 2 characters)</span>
                         </div>
                         <div class="form-group">
                             <label for="email" class="form-label">COMM FREQUENCY (EMAIL)</label>
@@ -297,15 +303,15 @@
                         </div>
                         <div class="form-group">
                             <label for="subject" class="form-label">MISSION BRIEF (SUBJECT)</label>
-                            <input type="text" id="subject" name="subject" class="form-input" placeholder="Enter subject..." required>
-                            <span class="form-error" id="subjectError">Mission brief required</span>
+                            <input type="text" id="subject" name="subject" class="form-input" placeholder="Enter subject..." required minlength="3" maxlength="200">
+                            <span class="form-error" id="subjectError">Mission brief required (min. 3 characters)</span>
                         </div>
                         <div class="form-group">
                             <label for="message" class="form-label">TRANSMISSION BODY</label>
-                            <textarea id="message" name="message" class="form-input form-textarea" rows="5" placeholder="Enter your message..." required></textarea>
-                            <span class="form-error" id="messageError">Transmission body required</span>
+                            <textarea id="message" name="message" class="form-input form-textarea" rows="5" placeholder="Enter your message..." required minlength="10" maxlength="5000"></textarea>
+                            <span class="form-error" id="messageError">Transmission body required (min. 10 characters)</span>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-submit">
+                        <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
                             <span class="btn-text">SEND TRANSMISSION</span>
                             <span class="btn-arrow">&#9654;</span>
                         </button>
@@ -334,6 +340,66 @@
             </div>
         </footer>
     </main>
+
+<!-- Project Coming Soon Modal -->
+    <div
+        class="project-modal"
+        id="projectModal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="projectModalTitle"
+        aria-hidden="true"
+    >
+        <div class="project-modal-backdrop" data-close-modal></div>
+
+        <div class="project-modal-box">
+
+            <button
+                class="project-modal-close"
+                id="projectModalClose"
+                type="button"
+                aria-label="Close notification"
+            >
+                ×
+            </button>
+
+            <div class="project-modal-status">
+                PROJECT DATABASE // NOTICE
+            </div>
+
+            <div class="project-modal-icon">
+                ◇
+            </div>
+
+            <h2 id="projectModalTitle">
+                PROJECT AKAN SEGERA HADIR
+            </h2>
+
+            <p>
+                Project ini masih dalam tahap pengembangan.
+                Silakan periksa kembali pada pembaruan berikutnya.
+            </p>
+
+            <div class="project-modal-project" id="projectModalName">
+                UNKNOWN PROJECT
+            </div>
+
+            <button
+                class="btn btn-primary"
+                id="projectModalConfirm"
+                type="button"
+            >
+                <span class="btn-text">
+                    UNDERSTOOD
+                </span>
+
+                <span class="btn-arrow">
+                    &#9654;
+                </span>
+            </button>
+
+        </div>
+    </div>
 
     <script src="js/data.js"></script>
     <script src="js/script.js"></script>

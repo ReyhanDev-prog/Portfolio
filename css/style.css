@@ -2012,3 +2012,296 @@ textarea:focus-visible {
     white-space: nowrap;
     border: 0;
 }
+
+/* ============================================================
+   Project Coming Soon Modal
+   ============================================================ */
+
+.project-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1.5rem;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+/* Modal aktif */
+.project-modal.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* Background gelap */
+.project-modal-backdrop {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(2, 7, 12, 0.8);
+
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+
+/* Kotak notifikasi */
+.project-modal-box {
+    position: relative;
+    z-index: 1;
+
+    width: min(100%, 460px);
+
+    padding: 2.5rem 2rem;
+
+    text-align: center;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(15, 26, 38, 0.98),
+            rgba(6, 11, 16, 0.98)
+        );
+
+    border: 1px solid var(--cyan-primary);
+
+    clip-path: polygon(
+        18px 0,
+        100% 0,
+        100% calc(100% - 18px),
+        calc(100% - 18px) 100%,
+        0 100%,
+        0 18px
+    );
+
+    box-shadow:
+        0 0 15px rgba(0, 200, 232, 0.15),
+        0 0 50px rgba(0, 200, 232, 0.08);
+
+    transform:
+        translateY(20px)
+        scale(0.96);
+
+    transition:
+        transform 0.3s ease;
+}
+
+/* Animasi masuk */
+.project-modal.active .project-modal-box {
+    transform:
+        translateY(0)
+        scale(1);
+}
+
+/* Garis HUD atas */
+.project-modal-box::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 15%;
+
+    width: 70%;
+    height: 2px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--cyan-primary),
+        transparent
+    );
+
+    box-shadow:
+        0 0 10px var(--cyan-glow);
+}
+
+/* Tombol X */
+.project-modal-close {
+    position: absolute;
+
+    top: 0.8rem;
+    right: 1rem;
+
+    width: 32px;
+    height: 32px;
+
+    border: 1px solid var(--border-color);
+
+    background: transparent;
+
+    color: var(--text-secondary);
+
+    font-family: var(--font-mono);
+
+    font-size: 1.3rem;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.project-modal-close:hover {
+    color: var(--cyan-primary);
+
+    border-color: var(--cyan-primary);
+
+    box-shadow:
+        0 0 8px var(--cyan-glow);
+}
+
+/* Label sistem */
+.project-modal-status {
+    margin-bottom: 1.5rem;
+
+    color: var(--cyan-primary);
+
+    font-family: var(--font-mono);
+
+    font-size: 0.65rem;
+
+    letter-spacing: 0.15em;
+}
+
+/* Ikon */
+.project-modal-icon {
+    margin-bottom: 1rem;
+
+    color: var(--cyan-primary);
+
+    font-size: 3.5rem;
+
+    line-height: 1;
+
+    text-shadow:
+        0 0 15px var(--cyan-glow);
+
+    animation:
+        projectIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes projectIconPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+
+        transform:
+            scale(0.95)
+            rotate(0deg);
+    }
+
+    50% {
+        opacity: 1;
+
+        transform:
+            scale(1.05)
+            rotate(45deg);
+    }
+}
+
+/* Judul */
+.project-modal-box h2 {
+    margin-bottom: 0.8rem;
+
+    color: var(--text-primary);
+
+    font-family: var(--font-mono);
+
+    font-size: clamp(
+        1rem,
+        4vw,
+        1.35rem
+    );
+
+    letter-spacing: 0.08em;
+}
+
+/* Deskripsi */
+.project-modal-box p {
+    max-width: 350px;
+
+    margin:
+        0 auto
+        1.3rem;
+
+    color: var(--text-secondary);
+
+    font-size: 0.85rem;
+
+    line-height: 1.7;
+}
+
+/* Nama project */
+.project-modal-project {
+    margin-bottom: 1.8rem;
+
+    padding: 0.6rem 1rem;
+
+    color: var(--cyan-primary);
+
+    background:
+        var(--cyan-very-dim);
+
+    border:
+        1px solid
+        var(--border-color);
+
+    font-family:
+        var(--font-mono);
+
+    font-size: 0.72rem;
+
+    letter-spacing: 0.1em;
+}
+
+/* Tombol */
+.project-modal-box .btn {
+    justify-content: center;
+
+    min-width: 180px;
+}
+
+html {
+    scrollbar-width: none; /* Firefox */
+}
+
+body {
+    -ms-overflow-style: none; /* Browser lama */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Edge, Safari */
+}
+
+/* ============================================================
+   Honeypot (anti-spam) – sembunyikan dari user
+   ============================================================ */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ============================================================
+   Server error message style
+   ============================================================ */
+.status-content.error {
+  color: #ff5566;
+  border-color: rgba(255, 85, 102, 0.4);
+  background: rgba(255, 85, 102, 0.06);
+}
