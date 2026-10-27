@@ -23,7 +23,7 @@ const projects = [
         status: 'IN DEVELOPMENT',
         statusClass: 'in-development',
         image: 'assets/images/ctrl-z.png',
-        url: '',
+        url: 'https://ctrl-z-game.vercel.app/',
     },
     {
         id: '02',
