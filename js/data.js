@@ -116,7 +116,7 @@ const projects = [
         status: 'ACTIVE',
         statusClass: 'in-progress',
         image: 'assets/images/reyhan-ak77.png',
-        url: '',
+        url: 'https://www.youtube.com/@reyhan-ak77',
     },
     {
         id: '10',
@@ -132,7 +132,7 @@ const projects = [
         status: 'ACTIVE',
         statusClass: 'in-progress',
         image: 'assets/images/trinomads.jpg',
-        url: '',
+        url: 'https://www.youtube.com/@TriNomads-m9i',
     },
     {
         id: 'XX',
